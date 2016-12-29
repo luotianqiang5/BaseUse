@@ -66,6 +66,7 @@ Vector<cocostudio::timeline::Frame*> FrameStatus::searchFrame(const std::string&
     //    return caches[animationName];
 }
 
+
 void FrameStatus::remove(){
     do{
         CC_BREAK_IF(!_searchAction);
@@ -78,6 +79,19 @@ void FrameStatus::remove(){
             }
         }
     }while (0);
+}
+
+Vec2 FrameStatus::searchPostion(const string& animationName){
+    Vec2 pos;
+    auto pFrames = searchFrame(animationName);
+    for(auto f:pFrames){
+         auto posF = dynamic_cast<PositionFrame*>(f);
+        if(posF){
+            pos = posF->getPosition();
+            break;
+        }
+    }
+    return pos;
 }
 
 ActionInterval* FrameStatus::createAction(float time,const std::string& animationName){

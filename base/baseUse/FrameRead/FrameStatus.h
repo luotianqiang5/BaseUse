@@ -21,6 +21,7 @@ public:
     cocos2d::ActionInterval* createAction(float time,const std::string& animationName);
     void applayAnimation(const std::string& animationName);
     void remove();
+    cocos2d::Vec2 searchPostion(const std::string& animationName);
 protected:
     bool init(const std::string& nodeName);
 protected:
