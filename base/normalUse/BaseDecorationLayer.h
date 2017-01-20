@@ -12,6 +12,13 @@
 #include "BaseStepLayer.h"
 #include "StudioLayer.h"
 #include "MyScollView.h"
+
+enum LOCK_POSITION_TYPE{
+    TYPE_LEFT_BOTTOM,
+    TYPE_CENTER
+};
+
+
 class BaseDecorationLayer: public BaseStepLayer{
 public:
     BaseDecorationLayer();
@@ -36,6 +43,7 @@ protected:
      virtual void onExitTransitionDidStart();
      virtual void stopPrompt();
 protected:
+    LOCK_POSITION_TYPE lock_postion_type;
     string _showIconAciton,_hideIconAction,resetName,resetMessage,_lockImage,_rewardLock;
     vector<string> categoryNames;
     KDS::MyScollView* _decoView;

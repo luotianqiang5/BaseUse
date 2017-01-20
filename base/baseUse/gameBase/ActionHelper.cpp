@@ -50,6 +50,7 @@ void ActionHelper::showBezier(Node* node, Vec2 endPosiont,ShowDirection type, st
     config.controlPoint_1 = config.controlPoint_2 = Vec2((pos.x+endPosiont.x)*.5,endPosiont.y+80);
     
     auto moveAction = Sequence::create(BezierTo::create(time, config),endCallback,NULL);
+   // moveAction = Sequence::create(JumpTo::create(time, endPosiont, 200, 1),endCallback, NULL);
     node->runAction(moveAction);
 }
 

@@ -88,12 +88,12 @@ bool DragFall::init(){
                             lis->setEnable(false);
                             touchAccel->setEnabled(false);
                             touchAccel->setEndRote(false);
-                            auto action = _frameStatus->createAction(0.6, "pourEnd");
+                            auto action = _frameStatus->createAction(1, "pourEnd");
                             if( action!= nullptr)
-                                _owner->runAction(Sequence::create(CallFunc::create(CC_CALLBACK_0(DragFall::pouring, this)),_frameStatus->createAction(0.6, "pourEnd"),Spawn::create(Sequence::create(MoveBy::create(0.6, Vec2(-30, 0)), MoveBy::create(0.6, Vec2(40, 0)), nullptr), RotateBy::create(1.2, -10), nullptr), nullptr));
+                                _owner->runAction(Sequence::create(CallFunc::create(CC_CALLBACK_0(DragFall::pouring, this)),_frameStatus->createAction(1, "pourEnd"),Spawn::create(Sequence::create(MoveBy::create(1, Vec2(-30, 0)), MoveBy::create(1, Vec2(40, 0)), nullptr), RotateBy::create(2, -10), nullptr), nullptr));
                             
                             else
-                                _owner->runAction(Sequence::create(RotateTo::create(0.3, fRotate),CallFunc::create(CC_CALLBACK_0(DragFall::pouring, this)), nullptr));
+                                _owner->runAction(Sequence::create(RotateTo::create(0.6, fRotate),CallFunc::create(CC_CALLBACK_0(DragFall::pouring, this)), nullptr));
                         });
                     }));
                     _move->getOwner()->runAction(Sequence::create(arrays));

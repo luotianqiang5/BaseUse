@@ -14,6 +14,7 @@
 #include "RewardManager.h"
 USING_NS_KD;
 
+
 const string BaseDecorationLayer:: _lockName = "_lockName";
 
 BaseDecorationLayer::BaseDecorationLayer():
@@ -29,7 +30,7 @@ _showIconAciton("showIcon")
 ,_chooseBg(nullptr)
 ,tempIndex(-1)
 ,tempKey(""){
-    
+      lock_postion_type = TYPE_LEFT_BOTTOM;
 }
 
 BaseDecorationLayer::~BaseDecorationLayer(){
@@ -60,8 +61,12 @@ void BaseDecorationLayer::creatIcon(size_t _index){
                 auto _node = _decoView->nodeCache.at(i);
                 auto _lock = Sprite::create(_lockImage);
                 _lock->setName(_lockName);
-                _lock->setAnchorPoint(Vec2(1,0));
-                _lock->setPosition(_node->getContentSize().width, 0);
+                if(lock_postion_type == TYPE_CENTER){
+                    _lock->setPosition(_node->getContentSize()*.5);
+                }else {
+                    _lock->setAnchorPoint(Vec2(1,0));
+                    _lock->setPosition(_node->getContentSize().width, 0);
+                }
                 _node->addChild(_lock);
             };
             if(!isFree(_currentcategory,i+1)){
@@ -79,8 +84,12 @@ void BaseDecorationLayer::creatIcon(size_t _index){
                         auto _node = _decoView->nodeCache.at(i);
                         auto _lock = Sprite::create(_rewardLock);
                         _lock->setName(_lockName);
-                        _lock->setAnchorPoint(Vec2(1,0));
-                        _lock->setPosition(_node->getContentSize().width, 0);
+                        if(lock_postion_type == TYPE_CENTER){
+                            _lock->setPosition(_node->getContentSize()*.5);
+                        }else {
+                            _lock->setAnchorPoint(Vec2(1,0));
+                            _lock->setPosition(_node->getContentSize().width, 0);
+                        }
                         _node->addChild(_lock);
                     }
                 }
