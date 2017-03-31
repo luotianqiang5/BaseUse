@@ -27,11 +27,14 @@ protected:
     virtual void fallEnd(LQComponent*, OperateListner* _lis);
     virtual void moveToTarget(LQComponent*, OperateListner* _lis);
    
-    void showSpoon();
+    virtual void showSpoon();
     void layerScale();
     void layerScaleBack();
     void showBowl();
      virtual void stopPrompt();
+    void showAddPrompt();
+    void hideThing(Node* node,float delayTime = 0);
+    void changeNodeToClipping(const vector<std::string>& nodeNames);
 protected:
     MoveHideShade* moveSpoon;
     TimerChangeComponent *mix;
@@ -45,6 +48,7 @@ protected:
     bool isPouring;
     int count,addEndNum;
     Node* gravityPrompt;
+    NodeGrid* grid;
 };
 
 

@@ -10,7 +10,7 @@
 #include "DistanceToTarget.h"
 #include "FrameStatus.h"
 #include "TouchAccleRoteComponent.h"
-
+#include "BezierCreator.h"
 BaseMakeLayer::BaseMakeLayer(){
     count =0;
     addEndNum = 0;
@@ -20,6 +20,7 @@ BaseMakeLayer::BaseMakeLayer(){
     mix = nullptr;
     isPouring = false;
     gravityPrompt = nullptr;
+    grid = nullptr;
 }
 
 BaseMakeLayer::~BaseMakeLayer(){
@@ -38,6 +39,8 @@ void BaseMakeLayer::touchEnd(ui::Widget* widget){
 
 void BaseMakeLayer::mixEnd(LQComponent*, OperateListner* _lis){
     moveSpoon->setEnabled(false);
+    if(grid)
+            grid->stopAllActions();
     string nodeNames[] = {"bowl","bowlUp"};
     for(int i=0;i<sizeof(nodeNames)/sizeof(*nodeNames);i++){
         auto node = _operate->getNodeByName(nodeNames[i]);
@@ -110,42 +113,36 @@ void BaseMakeLayer::showSpoon(){
     do{
         auto spoon = _operate->getNodeByName("spoon");
         CC_BREAK_IF(!spoon);
+        auto mixLayer = _operate->getNodeByName("mixLayer");
         if(mix == nullptr){
             mix = TimerChangeComponent::create();
             mix->setFrameFile(mixPath);
-            mix->setDelayPerUnit(1.5);
-            _operate->getNodeByName("mixLayer")->addComponent(mix);
+            mix->setDelayPerUnit(2.4f);
+           mixLayer->addComponent(mix);
             mix->addListners(FrameChangeeEnd,CC_CALLBACK_2(BaseMakeLayer::mixEnd,this));
         }
         SoundPlayer::getInstance()->playEffect("sound/general/ingredients_fly_in.mp3");
-        ActionHelper::showBackInOut(spoon, spoon->getPosition(), ActionHelper::ShowDirection::show_from_right,[=](){
-            auto mixPrompt = _operate->getNodeByName("mixPrompt");
-            if(mixPrompt != nullptr){
-                mixPrompt->stopAllActions();
-                mixPrompt->setVisible(true);
-                mixPrompt->runAction(RepeatForever::create(RotateBy::create(1, 90)));
-            }
-            DistanceToTarget *rote =DistanceToTarget::create();
-            rote->setCheckPoint(spoonCheckPoint);
-            rote->setTargetRect(CocosHelper::getNodeRectInWorld(_operate->getNodeByName("spoonLImit")));
-            spoon->addComponent(rote);
-            rote->addListners(MoveDistancePercent,[this](LQComponent* lq,OperateListner* _oper){
-                float _percent = dynAny_cast<float>(_oper->getData());
-                if(_percent<0)
-                    _percent =0;
-                else if(_percent>1)
-                    _percent = 1;
-                
-                lq->getOwner()->setRotation(spoonRote*_percent);
-            });
-            
-            
-            moveSpoon = MoveHideShade::create();
-            moveSpoon->setTarget(LQRect::create(CocosHelper::getNodeRectInWorld(_operate->getNodeByName("spoonLImit"))));
-            moveSpoon->setCheckPoint(spoonCheckPoint);
-            moveSpoon->setMoveType(MoveComponentType::kTypeBack);
-            moveSpoon->addListners(ComponentTouchMove, [this,rote,spoon](LQComponent*, OperateListner* _lis){
-                if(moveSpoon->checkInlimit()){
+   
+        
+        grid = NodeGrid::create();
+        
+        mixLayer->retain();
+        mixLayer->getParent()->addChild(grid);
+        mixLayer->removeFromParent();
+        grid->addChild(mixLayer);
+        grid->setPosition(mixLayer->getPosition());
+        mixLayer->release();
+        mixLayer->setPosition(Vec2::ZERO);
+        
+        moveSpoon = MoveHideShade::create();
+        moveSpoon->setTarget(LQRect::create(CocosHelper::getNodeRectInWorld(_operate->getNodeByName("spoonLImit"))));
+        moveSpoon->setCheckPoint(spoonCheckPoint);
+        moveSpoon->setMoveType(MoveComponentType::kTypeBack);
+        moveSpoon->addListners(ComponentTouchMove, [this,spoon](LQComponent*, OperateListner* _lis){
+            if(moveSpoon->checkInlimit()){
+                auto moveEndFunc = [=](){
+               
+                    moveSpoon->setEnabled(true);
                     auto spoonMix = spoon->getChildByName("mixing");
                     if(spoonMix != nullptr){
                         spoon->setCascadeOpacityEnabled(false);
@@ -161,16 +158,26 @@ void BaseMakeLayer::showSpoon(){
                         mix0->setVisible(true);
                         mix0->runAction(Sequence::create(DelayTime::create(0.2),FadeTo::create(0.2, 255),  nullptr));
                     }
-                    rote->pauseUpdate();
-                    spoon->runAction(RotateTo::create(0.2, spoonRote));
                     auto bowlUp = _operate->getNodeByName("bowlUp");
                     if(bowlUp != nullptr)
                         bowlUp->getParent()->reorderChild(bowlUp, 501);
                     _lis->setEnable(false);
                     moveSpoon->setBrintTop(false);
                     spoon->setZOrder(0);
+                    moveSpoon->setTarget(LQRect::create(CocosHelper::getNodeRectInWorld(_operate->getNodeByName("spoonLImit"))));
                     moveSpoon->setMoveType(MoveComponentType::kTypeInRect);
                     moveSpoon->addListners(ComponentTouchMove, [this](LQComponent*, OperateListner* _lis){
+                        if(grid != nullptr){
+                        auto actionTag = 2100;
+                        if(!grid->getActionByTag(actionTag)) {
+                            auto action = RepeatForever::create(Liquid::create(4, Size(4,4), 8,7));
+                         
+                            action->setTag(actionTag);
+                            grid->runAction(action);
+                           
+                        }else
+                            _actionManager->resumeTarget(grid);
+                        }
                         moveSpoon->playSound();
                         mix->start();
                         if(_mixAction != nullptr){
@@ -189,21 +196,52 @@ void BaseMakeLayer::showSpoon(){
                         }
                         
                     });
-                    auto end = [rote,this](LQComponent*, OperateListner* _lis){
-                        rote->pauseUpdate();
+                    auto end = [this](LQComponent*, OperateListner* _lis){
                         moveSpoon->stopSound();
                         mix->stop();
                         scaleBackBowl();
                         if(_mixAction != nullptr)
                             _actionManager->pauseTarget(mix->getOwner());
+                        if(grid){
+                             _actionManager->pauseTarget(grid);
+                        }
                     };
                     moveSpoon->addListners(ComponentTouchEnd,end);
                     moveSpoon->addListners(ComponentTouchCancle, end);
-                } else {
-                    rote->startUpdate();
+                };
+                
+                auto spoonFrame = FrameStatus::create(spoon->getName());
+                spoonFrame->setSearchAction(_operate->getAction());
+                auto spoonAction = spoonFrame->createAction(0.2f, "mixing");
+                if(spoonAction != nullptr){
+                     moveSpoon->setEnabled(false);
+                       string nodeNames[] = {"bowl","bowlUp"};
+                    for(int i=0;i<sizeof(nodeNames)/sizeof(*nodeNames);i++){
+                        auto scaleNode = _operate->getNodeByName(nodeNames[i]);
+                        if(scaleNode != nullptr){
+                            auto frame = FrameStatus::create(scaleNode->getName());
+                            frame->setSearchAction(_operate->getAction());
+                            auto action = frame->createAction(0.8, "mixing");
+                            if(action != nullptr)
+                                scaleNode->runAction(action);
+                        }
+                    }
+                    spoon->runAction(Sequence::create(spoonAction, CallFunc::create(moveEndFunc),nullptr));
+                }else {
+                    moveEndFunc();
                 }
-            });
-            spoon->addComponent(moveSpoon);
+            }
+        });
+        spoon->addComponent(moveSpoon);
+        moveSpoon->setEnabled(false);
+        ActionHelper::showBackInOut(spoon, spoon->getPosition(), ActionHelper::ShowDirection::show_from_right,[=](){
+            auto mixPrompt = _operate->getNodeByName("mixPrompt");
+            if(mixPrompt != nullptr){
+                mixPrompt->stopAllActions();
+                mixPrompt->setVisible(true);
+                mixPrompt->runAction(RepeatForever::create(RotateBy::create(1, 90)));
+            }
+             moveSpoon->setEnabled(true);
         });
         spoon->setVisible(true);
     }while (false);
@@ -304,22 +342,6 @@ DragFall* BaseMakeLayer::createDraOperate(Node* owner){
     });
     addEndNum++;
     if(owner != nullptr){
-        //        auto checkDistance = DistanceToTarget::create();
-        //        checkDistance->setTargetNode(_operate->getNodeByName("limit"));
-        //        checkDistance->addListners(MoveDistancePercent, [this](LQComponent*,OperateListner* lis){
-        //            auto percent = dynAny_cast<float>(lis->getData());
-        //            if(percent<0)
-        //                percent = 0;
-        //            else if(percent>1)
-        //                percent = 1;
-        //            auto bowl = _operate->getNodeByName("bowl");
-        //            if(bowl != nullptr){
-        //                this->setScale(1+0.4*percent);
-        //                this->setPosition(moveDistance*percent);
-        //            }
-        //        });
-        //        checkDistance->startUpdate();
-        //        owner->addComponent(checkDistance);
         owner->addComponent(_con);
         _con->getFrameStatus()->setSearchAction(_operate->getAction());
     }
@@ -370,9 +392,9 @@ void BaseMakeLayer::showBowl(){
         
         auto bowlUp = _operate->getNodeByName("bowlUp");
         if(bowlUp == nullptr) {
-            ActionHelper::showBackInOut(bowl, bowl->getPosition(), ActionHelper::ShowDirection::show_from_left,endfunc);
+            ActionHelper::showBackInOut(bowl, bowl->getPosition(), ActionHelper::ShowDirection::show_from_left,endfunc,0.95f);
             bowl->setRotation(200);
-            bowl->runAction(EaseBackInOut::create(RotateTo::create(0.75, 360)));
+            bowl->runAction(EaseBackInOut::create(RotateTo::create(0.95f, 360)));
             
         } else {
             bowlUp->getParent()->reorderChild(bowlUp, 3);
@@ -391,5 +413,71 @@ void BaseMakeLayer::stopPrompt(){
     auto down = _operate->getNodeByName("down");
     if(down != nullptr){
         down->setVisible(false);
+    }
+}
+
+void BaseMakeLayer::showAddPrompt(){
+    if(_prompt != nullptr){
+        vector<Vec2> points = {
+            _prompt->getPosition(),
+            _prompt->getPosition()+Vec2(-140,130),
+            _prompt->getPosition()+Vec2(-330,90),
+            _operate->getNodeByName("bowl")->getPosition()
+        };
+        _prompt->setVisible(true);
+          auto down = _operate->getNodeByName("down");
+        auto se = Sequence::create(CallFunc::create([=](){
+            if(down != nullptr)
+                down->setVisible(true);
+        }), FadeTo::create(0, 255), BezierCreator::createAction(points, 1),CallFunc::create([=](){
+            if(down != nullptr)
+                down->setVisible(false);
+        }),FadeTo::create(0, 0), DelayTime::create(2.7f),nullptr);
+        _prompt->runAction(RepeatForever::create(se));
+        if(down != nullptr)
+            down->setVisible(true);
+    }
+}
+
+void BaseMakeLayer::hideThing(Node* node,float delayTime){
+    ActionHelper::delayFunc(delayTime, this, [this,node]{
+        Director::getInstance()->getEventDispatcher()->setEnabled(true);
+        ActionHelper::ShowDirection dir = ActionHelper::ShowDirection::show_from_right;
+        auto bowl = _operate->getNodeByName("bowl");
+        if(bowl != nullptr) {
+            if(node->getPositionX()<bowl->getPositionX())
+                dir = ActionHelper::ShowDirection::show_from_left;
+        }
+        node->runAction(RotateTo::create(0.6, 0));
+        ActionHelper::hide(node, dir);
+        auto thingBowl  = _operate->getNodeByName(node->getName() + "bowl");
+        if(thingBowl) {
+            ActionHelper::hide(thingBowl, dir);
+        }
+    });
+}
+
+void BaseMakeLayer::changeNodeToClipping(const vector<std::string>& nodeNames){
+    for(auto name:nodeNames) {
+        auto node = _operate->getNodeByName(name);
+        if(node != nullptr){
+            auto s = dynamic_cast<Sprite*>(node);
+            if(s != nullptr) {
+                s->setCascadeOpacityEnabled(false);
+                s->setName("");
+                s->setOpacity(0);
+                auto clip = ClippingNode::create();
+                s->addChild(clip);
+                clip->setAlphaThreshold(0.5f);
+                auto mask = Sprite::createWithSpriteFrame(s->getSpriteFrame());
+                mask->setPosition(s->getContentSize()*.5);
+                clip->setStencil(mask);
+                
+                auto inner = Sprite::createWithSpriteFrame(s->getSpriteFrame());
+                inner->setPosition(s->getContentSize()*.5);
+                clip->addChild(inner);
+                inner->setName("inner");
+            }
+        }
     }
 }

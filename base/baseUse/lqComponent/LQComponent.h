@@ -67,6 +67,15 @@ public:
     void setDispatche(EventDispatcher*);
     void addComponent(Component*);
     LQComponent* getComponent(string _name);
+    template<typename T> T* getComponent(){
+        if(_childCompoent != nullptr){
+            for(auto itor = _childCompoent->begin();itor != _childCompoent->end();itor++){
+                if(itor->second != nullptr && typeid(*(itor->second)) == typeid(T))
+                    return static_cast<T*>(itor->second);
+            }
+        }
+        return nullptr;
+    }
     virtual void addListners(string name,ComponentCallFunc _callBack);
     virtual void addListners(OperateListner*);
     virtual void removeListner(OperateListner* ,bool isRemoveAll = false);
