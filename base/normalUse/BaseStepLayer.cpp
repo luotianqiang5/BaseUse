@@ -13,6 +13,7 @@ bool BaseStepLayer::onBack(){
 BaseStepLayer::BaseStepLayer(){
     _loopSound = -1;
     _operate = nullptr;
+    autoShowBtnName = {"btn_home","btn_more"};
 }
 BaseStepLayer::~BaseStepLayer(){
     if(_loopSound != -1) {
@@ -66,6 +67,24 @@ void BaseStepLayer::onEnterTransitionDidFinish() {
     }
     if(_operate != nullptr){
         
+        auto visibleSize = Director::getInstance()->getVisibleSize();
+        float delayTime = 0;
+        for(auto index =0;index<autoShowBtnName.size();index++){
+            auto btn = _operate->getNodeByName(autoShowBtnName[index]);
+            if(btn){
+               
+                auto dir = ActionHelper::ShowDirection::show_from_left;
+                auto btnWordPos = btn->getParent()->convertToWorldSpace(btn->getPosition());
+                if(btnWordPos.x>visibleSize.width*.5)
+                  dir = ActionHelper::ShowDirection::show_from_right;
+                ActionHelper::delayFunc(delayTime, btn, [btn,dir](){
+                    ActionHelper::showBackInOut(btn, btn->getPosition(), dir);
+                 btn->setVisible(true);
+                });
+                delayTime+=0.15f;
+            }
+        }
+        
         auto btn_next_light = _operate->getNodeByName("btn_next_light");
         if(btn_next_light != nullptr){
             btn_next_light->stopAllActions();
@@ -86,6 +105,14 @@ void BaseStepLayer::onEnterTransitionDidFinish() {
 void  BaseStepLayer::onEnter(){
     Layer::onEnter();
     changeHDPic("bg");
+    if(_operate != nullptr){
+    for(auto name:autoShowBtnName){
+        auto btn = _operate->getNodeByName(name);
+        if(btn){
+            btn->setVisible(false);
+        }
+    }
+    }
 }
 
 void BaseStepLayer::touchEnd(ui::Widget* widget) {

@@ -60,13 +60,13 @@ void AdLoadingLayerBase::onExit()
     }
     s_adShowAction = nullptr;
     _eventDispatcher->dispatchCustomEvent(ADS_CLOSE);
-    AdsManager::getInstance()->setVisiable(ADS_TYPE::kTypeBannerAds, true);
+  //  AdsManager::getInstance()->setVisiable(ADS_TYPE::kTypeBannerAds, true);
     
 }
 
 void AdLoadingLayerBase::onEnter()
 {
-    AdsManager::getInstance()->setVisiable(ADS_TYPE::kTypeBannerAds, false);
+  //  AdsManager::getInstance()->setVisiable(ADS_TYPE::kTypeBannerAds, false);
     Layer::onEnter();
     _eventDispatcher->dispatchCustomEvent(ADS_SHOW);
     KeyBackEvent::getInstance()->addBackEvent([](){return true;}, this);

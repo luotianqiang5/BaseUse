@@ -26,6 +26,8 @@ class AccleRoteComponent: public AccleComponent{
     CC_SYNTHESIZE(float, _originalRote, OriginalRote);
     /**旋转结束角度*/
     CC_SYNTHESIZE(float, _endRote, EndRote);
+     /**当rotate与_endRotete的差值大于_backThreshold时触发ACCLE_ROTE_BACK*/
+    CC_SYNTHESIZE(float, _backThreshold, BackThreshold);
 public:
     AccleRoteComponent();
 protected:

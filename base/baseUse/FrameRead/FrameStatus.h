@@ -26,16 +26,16 @@ public:
     template <typename T> T* getFrame(const std::string& animationName){
         auto pFrames = searchFrame(animationName);
         for(auto f:pFrames){
-            if( typeid(*f) == typeid(T))
-                return static_cast<T*>(f);
-            else if(typeid(T) == typeid(cocostudio::timeline::RotationFrame)&& typeid(*f) == typeid(cocostudio::timeline::SkewFrame)){
+            if( dynamic_cast<T*>(f) != nullptr)
+              return  dynamic_cast<T*>(f);
+            else if(typeid(T) == typeid(cocostudio::timeline::RotationFrame)&& dynamic_cast<cocostudio::timeline::SkewFrame*>(f) != nullptr){
                 auto sckew = dynamic_cast<cocostudio::timeline::SkewFrame*>(f);
                 if(sckew != nullptr) {
                     if(std::abs(sckew->getSkewX() - sckew->getSkewY())<1){
                         auto scaleF = cocostudio::timeline::RotationFrame::create();
                         scaleF->setNode(f->getNode());
                         scaleF->setRotation(sckew->getSkewX());
-                        return scaleF;
+                        return dynamic_cast <T*>(scaleF);
                     }
                 }
             }

@@ -14,6 +14,7 @@ BaseHomeLayer::BaseHomeLayer():
 _shopClass("ShopLayer")
 ,startClass("")
 {
+    autoShowBtnName.clear();
     startEffect = "sound/start.mp3";
 }
 

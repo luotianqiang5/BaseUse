@@ -20,9 +20,9 @@ bool TouchNodeComponent::touchBeganLis(Touch* _touch,Event*){
     return false;
 }
 void TouchNodeComponent::touchMoveLis(Touch*_touch,Event*){
-    if(isPointInNode(_owner, _touch->getLocation())){
+    //if(isPointInNode(_owner, _touch->getLocation())){
         dispatcherEventWithData(ComponentTouchMove, _touch->getLocation());
-    }
+   // }
 }
 void TouchNodeComponent::touchEndLis(Touch*_touch,Event*){
     if(isPointInNode(_owner, _touch->getLocation()))

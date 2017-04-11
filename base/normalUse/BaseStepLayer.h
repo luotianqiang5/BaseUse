@@ -41,6 +41,7 @@ protected:
     int _loopSound;
     static std::function<bool()> keyBack;
     static unordered_map<string, function<void(ui::Widget*)>> *clickBtns;
+    vector<string> autoShowBtnName;
 };
 
 #endif

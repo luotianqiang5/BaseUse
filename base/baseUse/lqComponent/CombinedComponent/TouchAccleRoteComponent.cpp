@@ -20,6 +20,7 @@ TouchAccleRoteComponent::TouchAccleRoteComponent(){
              _touchComponent->setEnabled(false);
              _owner->setRotation(_endRote);
              this->dispatcherEvent(ACCLE_ROTE_END);
+             this->setEnabled(false);
          });
          _touchComponent->setSwallowTouches(false);
          addComponent(_touchComponent);
