@@ -46,7 +46,7 @@ void BaseHomeLayer::touchEnd(ui::Widget* widget){
     else if(widget->getName().compare("btn_rate")==0){
      //   _cfsys.rateUs();
     } if(widget->getName() == "btn_privacy"){
-        Application::getInstance()->openURL("http://pyria925.host3v.net");
+        Application::getInstance()->openURL("https://www.crazycampmedia.com/privacys/");
     }
 }
 

@@ -36,7 +36,7 @@ void CheckBoxListView::preScolll() {
         int po = (int)-_listView->getInnerContainer()->getPositionX();
         float w = _listView->getInnerContainer()->getContentSize().width - _listView->getContentSize().width;
         auto pos =  (po+_itemDis/2)/_itemDis*_itemDis -_itemDis;
-        _listView->scrollToPercentHorizontal(pos/w*100 , 0.2f, true);
+        _listView->scrollToPercentHorizontal(std::max( pos/w*100,0.0f) , 0.2f, true);
     }
 }
 void CheckBoxListView::nextScoll(){
@@ -45,7 +45,7 @@ void CheckBoxListView::nextScoll(){
         int po = (int)-_listView->getInnerContainer()->getPositionX();
         float w = _listView->getInnerContainer()->getContentSize().width - _listView->getContentSize().width;
         auto pos = (po+_itemDis/2)/_itemDis*_itemDis+_itemDis;
-        _listView->scrollToPercentHorizontal(pos/w*100, 0.2f, true);
+        _listView->scrollToPercentHorizontal(std::min(pos/w*100,100.0f), 0.2f, true);
     }
 }
 

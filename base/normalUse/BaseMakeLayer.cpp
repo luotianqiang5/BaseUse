@@ -454,10 +454,6 @@ void BaseMakeLayer::hideThing(Node* node,float delayTime){
         if(thingBowl) {
             ActionHelper::hide(thingBowl, dir);
         }
-        auto thingBowlUp  = _operate->getNodeByName(node->getName() + "bowlUp");
-        if(thingBowlUp) {
-            ActionHelper::hide(thingBowlUp, dir);
-        }
     });
 }
 
