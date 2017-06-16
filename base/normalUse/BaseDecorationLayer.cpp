@@ -29,7 +29,8 @@ _showIconAciton("showIcon")
 ,shopClassName("ShopLayer")
 ,_chooseBg(nullptr)
 ,tempIndex(-1)
-,tempKey(""){
+,tempKey("")
+,moduleName(""){
       lock_postion_type = TYPE_LEFT_BOTTOM;
 }
 
@@ -72,8 +73,11 @@ void BaseDecorationLayer::creatIcon(size_t _index){
             if(!isFree(_currentcategory,i+1)){
                 addLockFunc();
             }else{
-                auto key = kRewardManager->getItemKey(_currentcategory, _currentcategory, i+1);
-                auto rewardInfo = kRewardManager->getRewardInfoItem(_currentcategory, _currentcategory, i+1);
+                auto moduleNameTemp = moduleName;
+                if(moduleNameTemp.empty())
+                    moduleNameTemp = _currentcategory;
+                auto rewardInfo = kRewardManager->getRewardInfoItem(moduleNameTemp, _currentcategory, i+1);
+                auto key = rewardInfo.getKey();
                 if(kRewardManager->isLocked(key)&&!IAPManager::getInstance()->isPackagePurchased(rewardInfo.iapId)){
                     //#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
                     //                    if(!_cfsys.checkNetworkAvailable())
@@ -136,8 +140,11 @@ void BaseDecorationLayer::hideCatagore(){
 }
 
 void BaseDecorationLayer::catagoreClick(EventSprite* s,size_t _index,MyScollView* scol) {
-    auto key = kRewardManager->getItemKey(_currentcategory, _currentcategory,_index+1);
-    auto rewardInfo = kRewardManager->getRewardInfoItem(_currentcategory, _currentcategory, _index+1);
+    auto moduleNameTemp = moduleName;
+    if(moduleNameTemp.empty())
+        moduleNameTemp = _currentcategory;
+    auto rewardInfo = kRewardManager->getRewardInfoItem(moduleNameTemp, _currentcategory, _index+1);
+     auto key = rewardInfo.getKey();
     if(kRewardManager->isLocked(key)&&!IAPManager::getInstance()->isPackagePurchased(rewardInfo.iapId)){
         //#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
         //        if(!_cfsys.checkNetworkAvailable())
@@ -253,7 +260,7 @@ void BaseDecorationLayer::onEnterTransitionDidFinish() {
                     if( tempNode->getParent()){
                         auto particle = ParticleSystemQuad::create("particles/fallStarParticle.plist");
                         particle->setPosition(tempNode->getParent()->getContentSize()*.5);
-                        tempNode->getParent()->addChild(particle,-1);
+                        tempNode->getParent()->addChild(particle);
                         particle->stopSystem();
                         
                         SoundPlayer::getInstance()->playEffect("sound/general/draw_success.mp3");

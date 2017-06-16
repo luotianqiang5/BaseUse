@@ -53,6 +53,7 @@ protected:
     Sprite* _chooseBg;
     int tempIndex;
     string tempKey;
+    string moduleName;
 };
 
 #endif /* BaseDecorationLayer_hpp */
