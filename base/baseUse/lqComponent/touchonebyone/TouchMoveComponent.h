@@ -51,7 +51,7 @@ protected:
     virtual void moveBackSchedle(float);
     virtual bool isCotain(Touch* pTouch);
     int getTargetIndex(Vec2 pos);
-
+    virtual void checkTouchMove(float);
 protected:
     int *_oldZOrder;
     Vec2* oragnalPos;
@@ -60,6 +60,7 @@ protected:
     Vec2 _backDistance;
     static const int backActionTag;
     Vector<LQPolygon*> _limits;
+    bool _isTouchMove;
 };
 
 #endif /* TouchMoveComponent_hpp */
