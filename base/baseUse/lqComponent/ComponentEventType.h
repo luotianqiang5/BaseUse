@@ -15,6 +15,7 @@ using namespace std;
 extern const string  ComponentTouchEnd;
 extern const string  ComponentTouchBegan;
 extern const string  ComponentTouchMove;
+extern const string  ComponentTouchMoveStand;
 extern const string  ComponentTouchMoveALL;
 extern const string  ComponentTouchCancle;
 

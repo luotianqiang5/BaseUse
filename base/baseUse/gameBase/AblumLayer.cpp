@@ -9,7 +9,8 @@
 #include "AblumLayer.h"
 #include "FileUtility.h"
 #include "MyDialog.h"
-
+#include "RuntimePermission.h"
+#include "RuntimePermissionManager.h"
 string AblumLayer::mailcontent = "I just made a delicious Food at this SUPER FUNNN app!!! Download it for FREE now! See if you can make a better one!";
 string AblumLayer::mailTitle = "";
 
@@ -61,6 +62,15 @@ void AblumLayer::onEnterTransitionDidFinish(){
     });
 }
 
+void AblumLayer::onExitTransitionDidStart(){
+    BaseStepLayer::onExitTransitionDidStart();
+#if __cplusplus > 201100L
+    RuntimePermissionManager::getInstance()->onPermissionGrantedResult = nullptr;
+#else
+    RuntimePermissionManager::getInstance()->mRuntimePermissionDelegate = nullptr;
+#endif
+}
+
 void AblumLayer::setRender(RenderTexture* _render){
     CC_SAFE_RELEASE_NULL(_image);
     _image = _render->newImage();
@@ -104,41 +114,38 @@ void AblumLayer::setRender(RenderTexture* _render){
 
 void AblumLayer::touchEnd(ui::Widget* widget){
     if(widget->getName() == "btn_ablum"){
-        Director::getInstance()->getEventDispatcher()->setEnabled(false);
-        _cfsys.saveToAlbum(_image, [this](bool _flag){
-            if(_flag) {
-                auto dialog = MyDialog::create("Image was saved to your Camera Roll!", MyDialog::oneBtnPath);
-                this->getScene()->addChild(dialog);
-            } else {
-                auto dialog = MyDialog::create("Failed, Please enable photo access in Privacy Setting!", MyDialog::oneBtnPath);
-                this->getScene()->addChild(dialog);
-            }
-            Director::getInstance()->getEventDispatcher()->setEnabled(true);
-        },mailTitle);
-    }else if(widget->getName() == "btn_share"){
-        if(_image == nullptr) {
-            
-        }
-        if(_shareFilePath.empty()) {
-            _shareFilePath = newSharePath();
-            _image->saveToFile(_shareFilePath);
-        }
-        string content;
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-        string appId = "";
-        auto map = FileUtils::getInstance()->getValueMapFromFile("AppConfig.plist");
-        auto itor = map.find("AppleId");
-        if(itor != map.end()){
-            auto value = itor->second;
-            if(value.getType() == Value::Type::STRING) {
-                appId = value.asString();
-            }
-        }
-        content = StringUtils::format("%s<p><a href=‘http://itunes.apple.com/app/%s’>http://itunes.apple.com/app/%s</a></p>",mailcontent.c_str(), appId.c_str(),appId.c_str());
+        
+#if __cplusplus > 201100L
+        RuntimePermissionManager::getInstance()->onPermissionGrantedResult = [&](int           requestcode,bool bgranted){
+            onPermissionGrantedResult(requestcode, bgranted);
+        };
 #else
-        content = mailcontent;
+        RuntimePermissionManager::getInstance()->mRuntimePermissionDelegate = this;
 #endif
-        _cfsys.sendEmailAndFilePic(mailTitle.c_str(), content.c_str(), _shareFilePath.c_str());
+        
+        //调用申请权限接口的标识，会在你的回调方法中用到，可以是任何值
+        int requestCode = 1;
+        //调用权限申请的方法,根据需要申请敏感权限
+        RuntimePermissionManager::getInstance()->requestRuntimePermissions(requestCode, PERMISSION::kWriteExternalStorage);
+        
+        
+        
+    }else if(widget->getName() == "btn_share"){
+        
+#if __cplusplus > 201100L
+        RuntimePermissionManager::getInstance()->onPermissionGrantedResult = [&](int           requestcode,bool bgranted){
+            onPermissionGrantedResult(requestcode, bgranted);
+        };
+#else
+        RuntimePermissionManager::getInstance()->mRuntimePermissionDelegate = this;
+#endif
+        
+        //调用申请权限接口的标识，会在你的回调方法中用到，可以是任何值
+        int requestCode = 2;
+        //调用权限申请的方法,根据需要申请敏感权限
+        RuntimePermissionManager::getInstance()->requestRuntimePermissions(requestCode, PERMISSION::kWriteExternalStorage);
+        
+        
     }else if(widget->getName() == "btn_close"){
         Director::getInstance()->getEventDispatcher()->setEnabled(false);
         _operate->playAction("out",[this](){
@@ -166,4 +173,56 @@ std::string AblumLayer::newSharePath(){
     
     auto sharePath = StringUtils::format("%s%ld.png",rootPath.c_str(),nowtime);
     return sharePath;
+}
+
+void AblumLayer::onPermissionGrantedResult(int requestCode,bool bGranted){
+    
+    if (bGranted) {
+        this->runAction(Sequence::create(DelayTime::create(0.0f),
+                                         CallFunc::create([=] {
+            if(requestCode == 1){
+                Director::getInstance()->getEventDispatcher()->setEnabled(false);
+                _cfsys.saveToAlbum(_image, [this](bool _flag){
+                    if(_flag) {
+                        auto dialog = MyDialog::create("Image was saved to your Camera Roll!", MyDialog::oneBtnPath);
+                        this->getScene()->addChild(dialog);
+                    } else {
+                        auto dialog = MyDialog::create("Failed, Please enable photo access in Privacy Setting!", MyDialog::oneBtnPath);
+                        this->getScene()->addChild(dialog);
+                    }
+                    Director::getInstance()->getEventDispatcher()->setEnabled(true);
+                },mailTitle);
+            }else if(requestCode == 2){
+                
+                if(_image == nullptr) {
+                    
+                }
+                if(_shareFilePath.empty()) {
+                    _shareFilePath = newSharePath();
+                    _image->saveToFile(_shareFilePath);
+                }
+                string content;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+                string appId = "";
+                auto map = FileUtils::getInstance()->getValueMapFromFile("AppConfig.plist");
+                auto itor = map.find("AppleId");
+                if(itor != map.end()){
+                    auto value = itor->second;
+                    if(value.getType() == Value::Type::STRING) {
+                        appId = value.asString();
+                    }
+                }
+                content = StringUtils::format("%s<p><a href=‘http://itunes.apple.com/app/%s’>http://itunes.apple.com/app/%s</a></p>",mailcontent.c_str(), appId.c_str(),appId.c_str());
+#else
+                content = mailcontent;
+#endif
+                _cfsys.sendEmailAndFilePic(mailTitle.c_str(), content.c_str(), _shareFilePath.c_str());
+            }
+        }),nullptr))    ;
+        log("-------->anroid runtime permisson was granted,requestcode = %d",requestCode);
+    }else{
+        //add your code....
+        log("-------->anroid runtime permisson was not  granted,requestcode = %d",requestCode);
+    }
+    
 }

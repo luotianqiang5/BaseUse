@@ -22,6 +22,7 @@ public:
 protected:
     virtual bool init();
     virtual void onEnterTransitionDidFinish();
+     virtual void onExitTransitionDidStart();
     virtual void touchEnd(ui::Widget* widget);
     std::string newSharePath();
 protected:
@@ -32,6 +33,8 @@ public:
     std::function<void()> closeCallback;
     static string mailcontent;
     static string mailTitle;
+private:
+    void onPermissionGrantedResult(int requestCode,bool bGranted);
 };
 
 #endif /* AblumLayer_hpp */

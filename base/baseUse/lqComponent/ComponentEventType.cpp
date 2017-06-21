@@ -10,6 +10,7 @@
 const string  ComponentTouchEnd = "ComponentTouchEnd";
 const string  ComponentTouchBegan = "ComponentTouchBegan";
 const string  ComponentTouchMove = "ComponentTouchMove";
+const string  ComponentTouchMoveStand = "ComponentTouchMoveStand";
 const string  ComponentTouchMoveALL = "ComponentTouchMoveALL";
 const string  ComponentTouchCancle = "ComponentTouchCancle";
 

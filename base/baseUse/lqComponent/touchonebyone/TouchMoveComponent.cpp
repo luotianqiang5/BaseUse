@@ -270,6 +270,6 @@ int TouchMoveComponent::getOldZorder(){
 
  void TouchMoveComponent::checkTouchMove(float){
      if(!_isTouchMove){
-           dispatcherEvent(ComponentTouchCancle);
+           dispatcherEvent(ComponentTouchMoveStand);
      }
 }

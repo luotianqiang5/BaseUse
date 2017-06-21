@@ -208,6 +208,7 @@ void BaseMakeLayer::showSpoon(){
                     };
                     moveSpoon->addListners(ComponentTouchEnd,end);
                     moveSpoon->addListners(ComponentTouchCancle, end);
+                    moveSpoon->addListners(ComponentTouchMoveStand, end);
                 };
                 
                 auto spoonFrame = FrameStatus::create(spoon->getName());
