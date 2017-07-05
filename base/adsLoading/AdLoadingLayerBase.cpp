@@ -32,7 +32,7 @@ AdLoadingLayerBase::~AdLoadingLayerBase()
 bool AdLoadingLayerBase::init()
 {
     Layer::init();
-    
+    needShowInterstitialAds = true;
     _loadingMinTime = 0;
     _loadingMaxTime = 5;
     isAdsShowed = false;
@@ -90,7 +90,7 @@ void AdLoadingLayerBase::_timeCheckSchedule(float dt)
     }
     else if (lTimePasses >=_loadingMaxTime)
     {
-        if(_adLoadType == ADS_TYPE::kTypeCrosspromoAds && !isAdsShowed&&InterstitialAds::getInstance()->isPreloaded()){
+        if(needShowInterstitialAds &&_adLoadType == ADS_TYPE::kTypeCrosspromoAds && !isAdsShowed&&InterstitialAds::getInstance()->isPreloaded()){
             _isRequestingLoadAd = false;
             _adLoadType = ADS_TYPE::kTypeInterstitialAds;
             AdsManager::getInstance()->showAds(_adLoadType);

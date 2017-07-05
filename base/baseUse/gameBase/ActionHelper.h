@@ -25,6 +25,7 @@ public:
 public:
     static void setStartPostion(Node* node, Vec2 endPosiont,ShowDirection type);
     static void showBackInOut(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time=0.9);
+    static void showBackOut(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time=0.9);
     static void showBouce(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time=1);
     static void showBezier(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time = 0.9);
     static void show(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time = 1,float percent = 0.8f);

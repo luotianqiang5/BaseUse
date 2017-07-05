@@ -121,4 +121,5 @@ protected:
     //广告加载完成与否(失败成功回调都算完成)
     bool _adLoadDone = false;
     bool isAdsShowed;
+    bool needShowInterstitialAds;
 };

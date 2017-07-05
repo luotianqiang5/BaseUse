@@ -18,6 +18,16 @@ void ActionHelper::showBackInOut(Node* node, Vec2 endPosiont,ShowDirection type,
     
 }
 
+void ActionHelper::showBackOut(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd ,float time){
+    setStartPostion(node, endPosiont,type);
+    CallFunc * endCallback = nullptr;
+    if(actionEnd != nullptr)
+        endCallback = CallFunc::create(actionEnd);
+    auto moveAction = Sequence::create(EaseBackOut::create(MoveTo::create(time, endPosiont)),endCallback,nullptr);
+    node->runAction(moveAction);
+    
+}
+
 void ActionHelper::showBouce(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd,float time){
     setStartPostion(node, endPosiont,type);
     CallFunc * endCallback = nullptr;
@@ -85,14 +95,19 @@ void ActionHelper::setStartPostion(Node* node, Vec2 endPosiont,ShowDirection typ
 }
 
 void ActionHelper::showRote(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd,float time) {
-    show(node,endPosiont,type,[node,actionEnd](){
-        auto p = node->convertToWorldSpace(Vec2(node->getContentSize().width*.5,0));
-        node->setAnchorPoint(Vec2(0.5, 0));
-        node->setPosition(node->getParent()->convertToNodeSpace(p));
-        node->runAction(Sequence::create(EaseExponentialOut::create(RotateBy::create(0.1, -15)), EaseExponentialIn::create(RotateBy::create(0.5, 15)),nullptr));
+    auto ornArnpos = node->getAnchorPoint();
+    auto wordEndPos = node->convertToWorldSpace(Vec2(node->getContentSize().width*node->getAnchorPoint().x,0));
+    node->setAnchorPoint(Vec2(node->getAnchorPoint().x,0));
+    auto endPos = node->getParent()->convertToNodeSpace(wordEndPos);
+    setStartPostion(node, endPos, type);
+    node->runAction(EaseBackOut::create(MoveTo::create(time, endPos)));
+    node->runAction(Sequence::create(RotateBy::create(time*0.58f, -10),EaseBackInOut::create(RotateBy::create(time*0.58f, 10)),CallFunc::create([=](){
+        node->setAnchorPoint(ornArnpos);
+        node->setPosition(endPosiont);
         if(nullptr != actionEnd)
             actionEnd();
-    },time,0.8);
+    }), nullptr));
+    node->setVisible(true);
 }
 
 void ActionHelper::show(Node* node, Vec2 endPosiont,ShowDirection type,std::function<void()> actionEnd,float time,float percent){
