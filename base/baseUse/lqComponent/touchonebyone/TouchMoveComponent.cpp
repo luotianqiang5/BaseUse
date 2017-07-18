@@ -114,6 +114,8 @@ void TouchMoveComponent::touchMoveLis(Touch* _touch,Event*){
     }
 }
 void TouchMoveComponent::touchEndLis(Touch* t,Event*){
+    isTouch = false;
+    this->unSchedule(schedule_selector(TouchMoveComponent::checkTouchMove));
     switch (_moveType) {
         case MoveComponentType::kTypeBack:{
             int _index = getTargetIndex(getCheckPointInPoints(_owner->getPosition()));
@@ -130,10 +132,11 @@ void TouchMoveComponent::touchEndLis(Touch* t,Event*){
             dispatcherEvent(ComponentTouchEnd);
             break;
     }
-    isTouch = false;
-      this->unSchedule(schedule_selector(TouchMoveComponent::checkTouchMove));
+ 
 }
 void TouchMoveComponent::touchCanceLis(Touch* t,Event*){
+    isTouch = false;
+    this->unSchedule(schedule_selector(TouchMoveComponent::checkTouchMove));
     switch (_moveType) {
         case MoveComponentType::kTypeBack:
             backToStart();
@@ -146,8 +149,7 @@ void TouchMoveComponent::touchCanceLis(Touch* t,Event*){
             dispatcherEvent(ComponentTouchCancle);
             break;
     }
-    isTouch = false;
-      this->unSchedule(schedule_selector(TouchMoveComponent::checkTouchMove));
+  
 }
 
 void TouchMoveComponent::backToStart(){
