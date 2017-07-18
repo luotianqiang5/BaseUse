@@ -21,6 +21,7 @@ protected:
         virtual void playClick();
 protected:
     string _shopClass,startClass,startEffect;
+    string privacyUrl;
 };
 
 #endif /* BaseHomeLayer_hpp */

@@ -24,14 +24,14 @@ public:
     };
 public:
     static void setStartPostion(Node* node, Vec2 endPosiont,ShowDirection type);
-    static void showBackInOut(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time=0.9);
+    static void showBackInOut(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time=1.1);
     static void showBackOut(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time=0.9);
     static void showBouce(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time=1);
-    static void showBezier(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time = 0.9);
+    static void showBezier(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time = 1.25);
     static void show(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time = 1,float percent = 0.8f);
     static void showRote(Node* node, Vec2 endPosiont,ShowDirection type, std::function<void()> actionEnd = nullptr,float time = 1);
     
-    static void hide(Node* node,ShowDirection type, std::function<void()> actionEnd = nullptr,bool _isRemove = true,float _time = 0.6);
+    static void hide(Node* node,ShowDirection type, std::function<void()> actionEnd = nullptr,bool _isRemove = true,float _time = 0.8);
     static void changeFade(Sprite* preSprite, Sprite* curentSprite);
     static void changeBouce(Sprite* preSprite, Sprite* curentSprite);
     static ActionInterval* createShakeAction(float distance = 5,float time = 0.05f);

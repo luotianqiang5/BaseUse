@@ -393,9 +393,9 @@ void BaseMakeLayer::showBowl(){
         
         auto bowlUp = _operate->getNodeByName("bowlUp");
         if(bowlUp == nullptr) {
-            ActionHelper::showBackInOut(bowl, bowl->getPosition(), ActionHelper::ShowDirection::show_from_left,endfunc,0.95f);
+            ActionHelper::showBackInOut(bowl, bowl->getPosition(), ActionHelper::ShowDirection::show_from_left,endfunc,1.1);
             bowl->setRotation(200);
-            bowl->runAction(EaseBackInOut::create(RotateTo::create(0.95f, 360)));
+            bowl->runAction(EaseBackInOut::create(RotateTo::create(1.1, 360)));
             
         } else {
             bowlUp->getParent()->reorderChild(bowlUp, 3);

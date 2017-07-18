@@ -57,7 +57,7 @@ void ActionHelper::showBezier(Node* node, Vec2 endPosiont,ShowDirection type, st
         endCallback = CallFunc::create(actionEnd);
     ccBezierConfig config;
     config.endPosition = endPosiont;
-    config.controlPoint_1 = config.controlPoint_2 = Vec2((pos.x+endPosiont.x)*.5,endPosiont.y+80);
+    config.controlPoint_1 = config.controlPoint_2 = Vec2((pos.x+endPosiont.x)*.5,endPosiont.y+150);
     
     auto moveAction = Sequence::create(BezierTo::create(time, config),endCallback,NULL);
    // moveAction = Sequence::create(JumpTo::create(time, endPosiont, 200, 1),endCallback, NULL);
@@ -101,7 +101,10 @@ void ActionHelper::showRote(Node* node, Vec2 endPosiont,ShowDirection type, std:
     auto endPos = node->getParent()->convertToNodeSpace(wordEndPos);
     setStartPostion(node, endPos, type);
     node->runAction(EaseBackOut::create(MoveTo::create(time, endPos)));
-    node->runAction(Sequence::create(RotateBy::create(time*0.58f, -10),EaseBackInOut::create(RotateBy::create(time*0.58f, 10)),CallFunc::create([=](){
+    float rotate = -10;
+    if(type == ActionHelper::ShowDirection::show_from_left)
+        rotate = 10;
+    node->runAction(Sequence::create(RotateBy::create(time*0.58f, rotate),EaseBackInOut::create(RotateBy::create(time*0.58f, -rotate)),CallFunc::create([=](){
         node->setAnchorPoint(ornArnpos);
         node->setPosition(endPosiont);
         if(nullptr != actionEnd)
