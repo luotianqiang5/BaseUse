@@ -60,16 +60,16 @@ void TouchMoveComponent::touchMoveLis(Touch* _touch,Event*){
     }
     
     auto _newPoint = _owner->getPosition()+_touch->getDelta();
-  
+    _isTouchMove = _touch->getDelta().getLength()>4;
+    if(!_isTouchMove){
+        this->scheduleOnce(schedule_selector(TouchMoveComponent::checkTouchMove), 0.4);
+    }else {
+        this->unSchedule(schedule_selector(TouchMoveComponent::checkTouchMove));
+    }
     
     switch (_moveType) {
         case MoveComponentType::kTypeInRect:{
-              _isTouchMove = _touch->getDelta().getLength()>4;
-            if(!_isTouchMove){
-                this->scheduleOnce(schedule_selector(TouchMoveComponent::checkTouchMove), 0.8);
-            }else {
-                this->unSchedule(schedule_selector(TouchMoveComponent::checkTouchMove));
-            }
+         
             _newPoint = _owner->getParent()->convertToNodeSpace(_touch->getLocation());
             int _index = -1;
             if(_checkPolygon != nullptr){

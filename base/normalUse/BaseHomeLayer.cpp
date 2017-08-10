@@ -62,7 +62,7 @@ void BaseHomeLayer::touchEnd(ui::Widget* widget){
          if(_nextStep != nullptr){
              auto _scne = Scene::create();
              _scne->addChild(_nextStep);
-             Director::getInstance()->replaceScene(TransitionFade::create(0.8, _scne, Color3B(255,165,228)));
+             Director::getInstance()->replaceScene(TransitionFade::create(0.8, _scne, Color3B::WHITE));
              _nextStep->release();
          }
          if(IAPManager::getInstance()->isShowAds())
