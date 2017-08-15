@@ -69,11 +69,11 @@ void BaseHomeLayer::touchEnd(ui::Widget* widget){
              AdsManager::getInstance()->showAds(ADS_TYPE::kTypeBannerAds);
          Director::getInstance()->getEventDispatcher()->setEnabled(true);
      };
-     if(IAPManager::getInstance()->isShowAds()){
+   //  if(IAPManager::getInstance()->isShowAds()){
          AdLoadingLayerBase::loadingDoneCallback = _callfunc;
          showAdsCallBack();
-     } else
-         _callfunc();
+     //} else
+       //  _callfunc();
 
 }
 

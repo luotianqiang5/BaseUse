@@ -78,7 +78,7 @@ void BaseDecorationLayer::creatIcon(size_t _index){
                     moduleNameTemp = _currentcategory;
                 auto rewardInfo = kRewardManager->getRewardInfoItem(moduleNameTemp, _currentcategory, i+1);
                 auto key = rewardInfo.getKey();
-                if(kRewardManager->isLocked(key)&&!IAPManager::getInstance()->isPackagePurchased(rewardInfo.iapId)){
+                if(kRewardManager->isLocked(key)){
                     //#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
                     //                    if(!_cfsys.checkNetworkAvailable())
                     //                        addLockFunc();
@@ -145,7 +145,7 @@ void BaseDecorationLayer::catagoreClick(EventSprite* s,size_t _index,MyScollView
         moduleNameTemp = _currentcategory;
     auto rewardInfo = kRewardManager->getRewardInfoItem(moduleNameTemp, _currentcategory, _index+1);
      auto key = rewardInfo.getKey();
-    if(kRewardManager->isLocked(key)&&!IAPManager::getInstance()->isPackagePurchased(rewardInfo.iapId)){
+    if(kRewardManager->isLocked(key)){
         //#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
         //        if(!_cfsys.checkNetworkAvailable())
         //            gotoShop();
