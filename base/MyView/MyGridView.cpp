@@ -73,6 +73,7 @@ void MyGridView::setAdapter(MyBaseAdapter* base){
                // btn->setAnchorPoint(Vec2(0,1));
                 btn->setPosition(curentPositionX+itemSize.width*.5,curentPositionY-itemSize.height*.5);
                 ScrollView::addChild(btn);
+                     btn->savePosition();
                 nodeCache.pushBack(btn);
             }
             setContentSize(Size(marginLeft+itemSize.width*col + space*(col-1)+marginRight,height+marginTop));
@@ -88,6 +89,7 @@ void MyGridView::setAdapter(MyBaseAdapter* base){
                 btn->setTag(i);
                // btn->setAnchorPoint(Vec2(0, 1));
                  btn->setPosition(curentPositionX+itemSize.width*.5,curentPositionY-itemSize.height*.5);
+                     btn->savePosition();
                  ScrollView::addChild(btn);
                 nodeCache.pushBack(btn);
             }
