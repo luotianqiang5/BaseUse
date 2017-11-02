@@ -12,36 +12,36 @@ IMPLEMENT_COCOS2DX_CLASS(LQComponent);
 
 
 
- void LQComponent::dispatcherEventWithData(string _eventName,const DynAny& _any){
-     if(_enabled&& nullptr != _listners){
-         auto temp = *_listners;
-         auto _itor = temp.begin();
-         while ( _itor!= temp.end()) {
-             if((*_itor)->getEnable() && (*_itor)->getKey().compare(_eventName) == 0){
-                 (*_itor)->setData(_any);
-                 auto _callBack = (*_itor)->getCallBack();
-                 if(_callBack != nullptr)
-                     _callBack(this,(*_itor));
-             }
-             _itor++;
-         }
-     }
-
+void LQComponent::dispatcherEventWithData(string _eventName,const DynAny& _any){
+    if(_enabled&& nullptr != _listners){
+        auto temp = *_listners;
+        auto _itor = temp.begin();
+        while ( _itor!= temp.end()) {
+            if((*_itor)->getEnable() && (*_itor)->getKey().compare(_eventName) == 0){
+                (*_itor)->setData(_any);
+                auto _callBack = (*_itor)->getCallBack();
+                if(_callBack != nullptr)
+                    _callBack(this,(*_itor));
+            }
+            _itor++;
+        }
+    }
+    
 }
 
- void LQComponent::dispatcherEvent(string _eventName){
-     if(_enabled&&nullptr != _listners){
-         auto temp = *_listners;
-         auto _itor = temp.begin();
-         while ( _itor!= temp.end()) {
-             if((*_itor)->getEnable() && (*_itor)->getKey().compare(_eventName) == 0){
-                 auto _callBack = (*_itor)->getCallBack();
-                 if(_callBack != nullptr)
-                     _callBack(this,(*_itor));
-             }
-             _itor++;
-         }
-     }
+void LQComponent::dispatcherEvent(string _eventName){
+    if(_enabled&&nullptr != _listners){
+        auto temp = *_listners;
+        auto _itor = temp.begin();
+        while ( _itor!= temp.end()) {
+            if((*_itor)->getEnable() && (*_itor)->getKey().compare(_eventName) == 0){
+                auto _callBack = (*_itor)->getCallBack();
+                if(_callBack != nullptr)
+                    _callBack(this,(*_itor));
+            }
+            _itor++;
+        }
+    }
 }
 
 EventListener* LQComponent::createLis(){
@@ -57,15 +57,15 @@ _componentLis(nullptr)
 ,_sound(nullptr)
 ,isSoundPlaying(false),
 _soundId(-1){
-	_dispatcher = Director::getInstance()->getEventDispatcher();
+    _dispatcher = Director::getInstance()->getEventDispatcher();
     _dispatcher->retain();
     _scheduler = Director::getInstance()->getScheduler();
     _scheduler->retain();
-   
-   
+    
+    
 }
 LQComponent::~LQComponent(){
- 
+    
     CC_SAFE_RELEASE_NULL(_componentLis);
     CC_SAFE_RELEASE_NULL(_dispatcher);
     CC_SAFE_RELEASE_NULL(_scheduler);
@@ -74,28 +74,28 @@ LQComponent::~LQComponent(){
     CC_SAFE_DELETE(_listners);
 }
 
- bool LQComponent::init(){
-     _lisNode = Node::create();
-     _lisNode->retain();
-     _lisNode->setonEnterTransitionDidFinishCallback(CC_CALLBACK_0(LQComponent::onResume, this));
-     _lisNode->setonExitTransitionDidStartCallback(CC_CALLBACK_0(LQComponent::onPause, this));
-     _name = getClassInfo()->getClassName();
-     return true;
+bool LQComponent::init(){
+    _lisNode = Node::create();
+    _lisNode->retain();
+    _lisNode->setonEnterTransitionDidFinishCallback(CC_CALLBACK_0(LQComponent::onResume, this));
+    _lisNode->setonExitTransitionDidStartCallback(CC_CALLBACK_0(LQComponent::onPause, this));
+    _name = getClassInfo()->getClassName();
+    return true;
 }
 
 void LQComponent::onAdd(){
     Component::onAdd();
     auto _soundNode = ui::Helper::seekNodeByName(_owner, "Audio");
     if(_soundNode != nullptr)
-         _sound = dynamic_cast<ComAudio*>(_soundNode->getComponent("Audio"));
+        _sound = dynamic_cast<ComAudio*>(_soundNode->getComponent("Audio"));
     if(_lisNode->getParent() == nullptr){
         _owner->addChild(_lisNode);
     }
     if(_componentLis == nullptr){
         _componentLis =createLis();
         if(_componentLis != nullptr){
-        _componentLis->setEnabled(_enabled);
-        _componentLis->retain();
+            _componentLis->setEnabled(_enabled);
+            _componentLis->retain();
         }
     }
     if(_childCompoent != nullptr)
@@ -118,7 +118,7 @@ void LQComponent::onRemove(){
         for(auto _itore = _childCompoent->begin();_itore != _childCompoent->end();_itore++)
             if(_itore->second->getOwner() != nullptr)
                 _itore->second->getOwner()->removeComponent(_itore->second);
-  
+    
 }
 
 void LQComponent::onResume(){
@@ -169,7 +169,7 @@ void LQComponent::addComponent(Component* _component){
         }
         
     } else {
-         CCLOG("err =======%s not LQComponent=====",_component->getName().c_str());
+        CCLOG("err =======%s not LQComponent=====",_component->getName().c_str());
     }
 }
 
@@ -182,59 +182,61 @@ LQComponent* LQComponent::getComponent(string _name){
     return nullptr;
 }
 
- void LQComponent::addListners(string name,ComponentCallFunc _callBack){
-     auto _lis = OperateListner::create();
-     _lis->setKey(name);
-     _lis->setCallBack(_callBack);
-     if(_listners == nullptr)
-         _listners = new Vector<OperateListner*>();
-     _listners->pushBack(_lis);
+void LQComponent::addListners(string name,ComponentCallFunc _callBack){
+    auto _lis = OperateListner::create();
+    _lis->setKey(name);
+    _lis->setCallBack(_callBack);
+    if(_listners == nullptr)
+        _listners = new Vector<OperateListner*>();
+    _listners->pushBack(_lis);
 }
 
- void  LQComponent::addListners(OperateListner* _lis){
-     if(_lis != nullptr) {
-         if(_listners == nullptr)
-             _listners = new Vector<OperateListner*>();
-         _listners->pushBack(_lis);
-     }
+void  LQComponent::addListners(OperateListner* _lis){
+    if(_lis != nullptr) {
+        if(_listners == nullptr)
+            _listners = new Vector<OperateListner*>();
+        _listners->pushBack(_lis);
+    }
 }
 
- void LQComponent::removeListner(OperateListner* _oper,bool flag){
-     if(_listners != nullptr)
-    _listners->eraseObject(_oper,flag);
-     if(_listners->size() == 0)
-         CC_SAFE_DELETE(_listners);
+void LQComponent::removeListner(OperateListner* _oper,bool flag){
+    if(_listners != nullptr){
+        _listners->eraseObject(_oper,flag);
+        if(_listners->size() == 0)
+            CC_SAFE_DELETE(_listners);
+    }
 }
 
- void LQComponent::removeListner(string _eventName,bool removeAll ){
-     if(_listners != nullptr){
-         if (removeAll)
-         {
-             for (auto iter = _listners->begin(); iter != _listners->end();)
-             {
-                 if ((*iter)->getKey() == _eventName)
-                 {
-                     iter = _listners->erase(iter);
-                 }
-                 else
-                 {
-                     ++iter;
-                 }
-             }
-         }
-         else
-         {
-             auto iter = std::find_if(_listners->begin(), _listners->end(), [_eventName](OperateListner* _oper){
-                 return _oper->getKey()== _eventName;
-             });
-             if (iter != _listners->end())
-             {
-                 _listners->erase(iter);
-             }
-         }
-     }
-     if(_listners->begin() == _listners->end())
-         CC_SAFE_DELETE(_listners);
+void LQComponent::removeListner(string _eventName,bool removeAll ){
+    if(_listners != nullptr){
+        if (removeAll)
+        {
+            for (auto iter = _listners->begin(); iter != _listners->end();)
+            {
+                if ((*iter)->getKey() == _eventName)
+                {
+                    iter = _listners->erase(iter);
+                }
+                else
+                {
+                    ++iter;
+                }
+            }
+        }
+        else
+        {
+            auto iter = std::find_if(_listners->begin(), _listners->end(), [_eventName](OperateListner* _oper){
+                return _oper->getKey()== _eventName;
+            });
+            if (iter != _listners->end())
+            {
+                _listners->erase(iter);
+            }
+        }
+        if(_listners->begin() == _listners->end())
+            CC_SAFE_DELETE(_listners);
+    }
+    
 }
 
 void LQComponent::scheduleOnce(SEL_SCHEDULE selector, float delay)
@@ -265,14 +267,14 @@ void LQComponent::playSound(){
     if(_sound != nullptr){
         if(!isSoundPlaying){
             if(_sound->isLoop()){
-                 isSoundPlaying = true;
-            if(_soundId == -1){
-                _soundId = _sound->playEffect();
+                isSoundPlaying = true;
+                if(_soundId == -1){
+                    _soundId = _sound->playEffect();
+                }else
+                    _sound->resumeEffect(_soundId);
             }else
-                _sound->resumeEffect(_soundId);
-            }else
                 _soundId = _sound->playEffect();
-    }
+        }
     }
 }
 
@@ -285,9 +287,9 @@ void LQComponent::pauseSound(){
 void LQComponent::stopSound(){
     if(_sound != nullptr){
         isSoundPlaying = false;
-         _sound->stopEffect(_soundId);
+        _sound->stopEffect(_soundId);
         _soundId = -1;
-       
+        
     }
 }
 

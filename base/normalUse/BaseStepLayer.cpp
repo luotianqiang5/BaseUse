@@ -72,14 +72,14 @@ void BaseStepLayer::onEnterTransitionDidFinish() {
         for(auto index =0;index<autoShowBtnName.size();index++){
             auto btn = _operate->getNodeByName(autoShowBtnName[index]);
             if(btn){
-               
+                
                 auto dir = ActionHelper::ShowDirection::show_from_left;
                 auto btnWordPos = btn->getParent()->convertToWorldSpace(btn->getPosition());
                 if(btnWordPos.x>visibleSize.width*.5)
-                  dir = ActionHelper::ShowDirection::show_from_right;
+                    dir = ActionHelper::ShowDirection::show_from_right;
                 ActionHelper::delayFunc(delayTime, btn, [btn,dir](){
                     ActionHelper::showBackInOut(btn, btn->getPosition(), dir);
-                 btn->setVisible(true);
+                    btn->setVisible(true);
                 });
                 delayTime+=0.15f;
             }
@@ -106,12 +106,22 @@ void  BaseStepLayer::onEnter(){
     Layer::onEnter();
     changeHDPic("bg");
     if(_operate != nullptr){
-    for(auto name:autoShowBtnName){
-        auto btn = _operate->getNodeByName(name);
-        if(btn){
-            btn->setVisible(false);
+        
+        auto visibleSize = Director::getInstance()->getVisibleSize();
+        auto bg = _operate->getNodeByName("bg");
+        if(bg){
+            if(bg->getContentSize().height<visibleSize.height){
+                bg->setScale(visibleSize.height/bg->getContentSize().height);
+            }
+            if(bg->getContentSize().width<visibleSize.width)
+                  bg->setScale(visibleSize.width/bg->getContentSize().width);
         }
-    }
+        for(auto name:autoShowBtnName){
+            auto btn = _operate->getNodeByName(name);
+            if(btn){
+                btn->setVisible(false);
+            }
+        }
     }
 }
 
