@@ -63,7 +63,7 @@ bool MainScene::init(){
         if(sceneCreates != nullptr) {
             auto wordSize = Director::getInstance()->getVisibleSize();
             auto _listView = ui::ListView::create();
-            _listView->setContentSize(wordSize);
+            _listView->setContentSize(wordSize-Size(0,80));
             _listView->setDirection(ListView::Direction::VERTICAL);
             _listView->setGravity(cocos2d::ui::ListView::Gravity::CENTER_HORIZONTAL);
             _listView->setItemsMargin(20);
