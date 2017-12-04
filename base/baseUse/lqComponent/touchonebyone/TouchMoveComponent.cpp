@@ -162,7 +162,8 @@ void TouchMoveComponent::backToStart(){
                 Director::getInstance()->getRenderer()->render();
                 CC_SAFE_DELETE(_oldZOrder);
             }
-            _owner->setPosition(*oragnalPos);
+            if(oragnalPos != nullptr)
+                _owner->setPosition(*oragnalPos);
             dispatcherEvent(ComponentTouchCancle);
         }), nullptr);
         _backAciton->setTag(backActionTag);

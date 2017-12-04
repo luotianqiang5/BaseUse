@@ -47,7 +47,7 @@ void BaseHomeLayer::touchEnd(ui::Widget* widget){
     else if(widget->getName().compare("btn_rate")==0){
      //   _cfsys.rateUs();
     } else if(widget->getName() == "btn_privacy"){
-        Application::getInstance()->openURL(privacyUrl);
+        _cfsys.openUrl(privacyUrl);
     }
 }
 
