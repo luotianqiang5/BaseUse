@@ -18,7 +18,8 @@ IMPLEMENT_COCOS2DX_CLASS(DragFall);
 DragFall::DragFall():
 _needGravity(false),
 _frameStatus(nullptr)
-,_moveToTargetTime(0.4){
+,_moveToTargetTime(0.4)
+,_autoRemoveFrameStatus(true){
     
 }
 
@@ -126,7 +127,7 @@ void DragFall::onAdd(){
     if(_frameStatus == nullptr)
         setFrameStatus(FrameStatus::create(_owner->getName()));
     _owner->setOnExitCallback([this](){
-        if(_frameStatus != nullptr)
+         if(_autoRemoveFrameStatus&&_frameStatus != nullptr)
             _frameStatus->remove();
     });
 }

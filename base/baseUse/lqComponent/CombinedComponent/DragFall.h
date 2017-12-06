@@ -16,6 +16,7 @@ class DragFall : public LQComponent {
     CC_SYNTHESIZE_RETAIN(FrameStatus*, _frameStatus, FrameStatus);
     CC_SYNTHESIZE(float, _moveToTargetTime, MoveToTargetTime)
     CC_SYNTHESIZE(bool, _needGravity, NeedGravity);
+    CC_SYNTHESIZE(bool, _autoRemoveFrameStatus, AutoRemoveFrameStatus);
 public:
     DragFall();
     ~DragFall();
