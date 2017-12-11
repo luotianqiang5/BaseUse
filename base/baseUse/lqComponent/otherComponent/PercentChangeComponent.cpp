@@ -10,7 +10,8 @@
 IMPLEMENT_COCOS2DX_CLASS(PercentChangeComponent);
 
 PercentChangeComponent::PercentChangeComponent():
-_count(-1){
+_count(-1)
+,_currentPercent(0){
     
 }
 
@@ -47,7 +48,7 @@ void PercentChangeComponent::invoking(float percent){
             _changeNodes.at(_count-1)->setOpacity(255*(1-changePercent));
         }
         if(_count<_changeNodes.size())
-            _changeNodes.at(_count)->setOpacity(100+155*changePercent);
+            _changeNodes.at(_count)->setOpacity(55+200*changePercent);
         //  CCLOG("changePercent==%f",changePercent);
         
         if(abs(1-changePercent)<0.01){

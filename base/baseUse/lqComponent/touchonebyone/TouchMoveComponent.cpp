@@ -156,16 +156,11 @@ void TouchMoveComponent::backToStart(){
     if(oragnalPos != nullptr && _owner != nullptr) {
         _backDistance =  (*oragnalPos)- _owner->getPosition();
         _owner->stopActionByTag(backActionTag);
-        auto _backAciton = Sequence::create(EaseElasticOut::create(MoveTo::create(0.2, (*oragnalPos))),CallFunc::create([&](){
-            if(_oldZOrder != nullptr){;
-                _owner->getParent()->reorderChild(_owner, *_oldZOrder);
-                Director::getInstance()->getRenderer()->render();
-                CC_SAFE_DELETE(_oldZOrder);
-            }
-            if(oragnalPos != nullptr)
-                _owner->setPosition(*oragnalPos);
-            dispatcherEvent(ComponentTouchCancle);
+      
+        auto _backAciton = Sequence::create(EaseElasticOut::create(MoveTo::create(0.2, (*oragnalPos))),CallFunc::create([](){
         }), nullptr);
+        this->unSchedule(schedule_selector(TouchMoveComponent::bakeToStartEnd));
+        this->scheduleOnce(schedule_selector(TouchMoveComponent::bakeToStartEnd), 0.2);
         _backAciton->setTag(backActionTag);
         _owner->runAction(_backAciton);
     }
@@ -275,4 +270,15 @@ int TouchMoveComponent::getOldZorder(){
      if(!_isTouchMove){
            dispatcherEvent(ComponentTouchMoveStand);
      }
+}
+
+ void TouchMoveComponent::bakeToStartEnd(float){
+     if(_oldZOrder != nullptr){;
+         _owner->getParent()->reorderChild(_owner, *_oldZOrder);
+         Director::getInstance()->getRenderer()->render();
+         CC_SAFE_DELETE(_oldZOrder);
+     }
+     if(oragnalPos != nullptr)
+         _owner->setPosition(*oragnalPos);
+     dispatcherEvent(ComponentTouchCancle);
 }

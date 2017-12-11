@@ -65,7 +65,8 @@ _soundId(-1){
     
 }
 LQComponent::~LQComponent(){
-    
+    if(_scheduler)
+        _scheduler->unscheduleAllForTarget(this);
     CC_SAFE_RELEASE_NULL(_componentLis);
     CC_SAFE_RELEASE_NULL(_dispatcher);
     CC_SAFE_RELEASE_NULL(_scheduler);

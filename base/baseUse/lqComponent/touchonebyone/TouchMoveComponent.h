@@ -52,6 +52,7 @@ protected:
     virtual bool isCotain(Touch* pTouch);
     int getTargetIndex(Vec2 pos);
     virtual void checkTouchMove(float);
+    virtual void bakeToStartEnd(float);
 protected:
     int *_oldZOrder;
     Vec2* oragnalPos;
