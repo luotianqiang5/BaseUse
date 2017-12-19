@@ -87,6 +87,8 @@ IMPLEMENT_COCOS2DX_CLASS(MoveForeverComponent);
 
 MoveForeverComponent::MoveForeverComponent():
 _speed(0)
+,_nextNode(nullptr)
+,_currentNode(nullptr)
 ,_direction(leftToRigth)
 ,_moveAction(nullptr)
 ,_temp1(nullptr)
@@ -96,7 +98,8 @@ _speed(0)
 }
 
 MoveForeverComponent::~MoveForeverComponent(){
-    
+    CC_SAFE_RELEASE_NULL(_nextNode);
+    CC_SAFE_RELEASE_NULL(_currentNode);
 }
 
 bool MoveForeverComponent::MoveForeverComponent::init(){
@@ -137,7 +140,12 @@ void  MoveForeverComponent::resumeAction(){
                     _temp2 = _widget->clone();
                 }
             }
-            
+            if(_nextNode) {
+                _temp2 = _nextNode;
+            }
+            if(_currentNode){
+                _temp1 = _currentNode;
+            }
             auto _contentSize = _owner->getContentSize();
             if(abs(_direction.x)>abs(_direction.y)){
                 _moveDeta.x = _contentSize.width*(_direction.x/abs(_direction.x));

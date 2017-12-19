@@ -33,6 +33,8 @@ private:
 
 class MoveForeverComponent : public LQComponent {
     CC_SYNTHESIZE(float, _speed, Speed);
+    CC_SYNTHESIZE_RETAIN(Node*, _nextNode, NextNode);
+    CC_SYNTHESIZE_RETAIN(Node*, _currentNode, CurrentNode);
     DECLARE_COMPONENT_DYNCLASS(MoveForeverComponent);
 public:
     MoveForeverComponent();
