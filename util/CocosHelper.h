@@ -77,6 +77,16 @@ public:
     //判断点是否在node之内，可用于touch判断
     static bool isPointInNode(Node* apNode, const Point& aPtWorld);
     
+    //获取node的世界坐标 参数可选：锚点
+    static Vec2 getNodeWordPos(Node* apNode, Vec2 anchor = Vec2::ANCHOR_MIDDLE);
+    
+    //世界坐标转换为父节点坐标
+    static Vec2 getNodePosLocation(Node* apNode, Vec2 wordPos);
+    
+    //转换其他节点坐标至本节点坐标系
+    //参数： 本节点  其他节点  其他节点需要转换的锚点（默认中点）
+    static Vec2 getLocationPosByOtherNode(Node* myNode, Node* otherNode, Vec2 anchor  = Vec2::ANCHOR_MIDDLE);
+    
     static Rect getNodeRectInWorld(Node* apNode);
     
     //node content rect center

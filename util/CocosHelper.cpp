@@ -288,4 +288,17 @@ Node* CocosHelper::findNode_if(Node* _root,std::function<bool(Node* node)> _call
     }
     return find;
 }
+Vec2 CocosHelper::getNodeWordPos(Node* apNode, Vec2 anchor)
+{
+    return apNode->convertToWorldSpace(Vec2(apNode->getContentSize().width * anchor.x, apNode->getContentSize().height * anchor.y));
+}
 
+Vec2 CocosHelper::getNodePosLocation(Node* apNode, Vec2 wordPos)
+{
+    return apNode->getParent()->convertToNodeSpace(wordPos);
+}
+
+Vec2 CocosHelper::getLocationPosByOtherNode(Node* myNode, Node* otherNode, Vec2 anchor)
+{
+    return CocosHelper::getNodePosLocation(myNode, CocosHelper::getNodeWordPos(otherNode, anchor));
+}
