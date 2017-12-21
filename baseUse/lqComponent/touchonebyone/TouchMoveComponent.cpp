@@ -103,6 +103,17 @@ void TouchMoveComponent::touchMoveLis(Touch* _touch,Event*){
             dispatcherEventWithData(ComponentTouchMoveALL,_touch->getDelta());
         }
             break;
+        case MoveComponentType::kTypeToRect:{
+            _newPoint = _owner->getParent()->convertToNodeSpace(_touch->getLocation());
+            int _index = -1;
+            
+            _index = getTargetIndex(getCheckPointInPoints(_newPoint));
+            if(_owner != nullptr)
+                _owner->setPosition(_newPoint);
+
+            dispatcherEventWithData(ComponentTouchMoveInRect, _index);
+        }
+            break;
         default:
             if(_owner != nullptr){
                 if(_brintTop&&_owner->getZOrder() != 500)
@@ -125,6 +136,19 @@ void TouchMoveComponent::touchEndLis(Touch* t,Event*){
                 CC_SAFE_DELETE(_oldZOrder);
                 dispatcherEventWithData(ComponentTouchEnd,_index);
             }
+        }
+            break;
+        case MoveComponentType::kTypeToRect:{
+            int _index = getTargetIndex(getCheckPointInPoints(_owner->getPosition()));
+
+            if(_index<0)
+//                backToStart();
+                dispatcherEventWithData(ComponentTouchEnd,_index);
+            else {
+                CC_SAFE_DELETE(_oldZOrder);
+                dispatcherEventWithData(ComponentTouchEnd,_index);
+            }
+            isTouch = false;
         }
             break;
         default:

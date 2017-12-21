@@ -17,6 +17,7 @@
 enum class MoveComponentType{
     kTypeBack,
     kTypeInRect,
+    kTypeToRect, // 移动到响应区域内
     kTypeNull
 };
 class TouchMoveComponent : public TouchComponent{
