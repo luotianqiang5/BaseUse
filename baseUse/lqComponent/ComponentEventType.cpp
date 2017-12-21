@@ -13,6 +13,7 @@ const string  ComponentTouchMove = "ComponentTouchMove";
 const string  ComponentTouchMoveStand = "ComponentTouchMoveStand";
 const string  ComponentTouchMoveALL = "ComponentTouchMoveALL";
 const string  ComponentTouchCancle = "ComponentTouchCancle";
+const string  ComponentTouchMoveInRect = "ComponentTouchMoveInRect";
 
 const string  ACCLE_ROTE_END = "ACCLE_ROTE_END";//rote end valuse
 const string  ACCLE_ROTE_BACK = "ACCLE_ROTE_BACK"; //rote back

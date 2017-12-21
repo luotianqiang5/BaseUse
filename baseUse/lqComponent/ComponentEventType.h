@@ -18,7 +18,7 @@ extern const string  ComponentTouchMove;
 extern const string  ComponentTouchMoveStand;
 extern const string  ComponentTouchMoveALL;
 extern const string  ComponentTouchCancle;
-
+extern const string  ComponentTouchMoveInRect;
 
 extern const string  ACCLE_ROTE_END;//rote end valuse
 extern const string  ACCLE_ROTE_BACK; //rote back
